@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistical Solutions Club – ESPOCH</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #0C2D6B;
+  --navy-d: #071D4A;
+  --navy-l: #1748A3;
+  --orange: #E87722;
+  --red:    #D93F35;
+  --green:  #2DAE68;
+  --white:  #FFFFFF;
+  --light:  #F2F5FC;
+  --muted:  #5A6A8A;
+  --border: #D0D9ED;
+  --text:   #111827;
+  --cyan:   #00AEEF;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--white);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── PAGE TRANSITION ── */
+#page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--navy-d);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+#page-loader.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.loader-logo {
+  width: 64px;
+  height: 64px;
+  animation: pulseLogo 1.2s infinite ease-in-out;
+}
+@keyframes pulseLogo {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+.loader-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--navy);
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 20px rgba(7,29,74,0.35);
+  height: 68px;
+}
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.logo-img img { width: 44px; height: 44px; object-fit: contain; }
+.logo-text { color: var(--white); }
+.logo-text strong {
+  display: block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.logo-text span {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+nav { display: flex; height: 68px; }
+.nav-tab {
+  color: rgba(255,255,255,0.72);
+  text-decoration: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid transparent;
+  border-top: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  cursor: pointer;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: relative;
+}
+.nav-tab:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+.nav-tab.active { color: var(--white); border-bottom-color: var(--cyan); }
+
+/* ── COLOR BAR ── */
+.color-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--navy-l) 0%, var(--cyan) 25%, var(--orange) 50%, var(--red) 75%, var(--green) 100%);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  min-height: 480px;
+  background: var(--navy-d);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+}
+#heroCanvas { width: 100%; height: 100%; display: block; }
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(7,29,74,0.95) 0%, rgba(7,29,74,0.6) 50%, transparent 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 3;
+  padding: 64px 48px 64px;
+  max-width: 650px;
+}
+.hero-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 32px;
+  height: 2px;
+  background: var(--cyan);
+}
+.hero h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.0;
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.hero h1 em { color: var(--orange); font-style: normal; display: block; }
+.hero p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 32px;
+  max-width: 500px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--orange);
+  color: var(--white);
+  border: none;
+  padding: 11px 30px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-block;
+}
+.btn-primary:hover { background: #c96418; transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  color: var(--white);
+  border: 1.5px solid rgba(255,255,255,0.45);
+  padding: 11px 30px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+  display: inline-block;
+}
+.btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+
+/* ── STATS ── */
+.stats-strip {
+  background: var(--navy);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.stat-item {
+  padding: 22px 52px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--orange);
+  letter-spacing: 0.02em;
+  display: block;
+  line-height: 1;
+}
+.stat-lbl {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+}
+
+/* ── SECTION ── */
+.section {
+  padding: 64px 48px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.section-accent { color: var(--orange); }
+.section-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.section-rule::before {
+  content: '';
+  width: 4px;
+  height: 28px;
+  background: var(--orange);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── CARDS ── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.card {
+  background: var(--white);
+  padding: 32px 28px;
+  transition: background 0.3s, transform 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.card:hover::before { transform: scaleX(1); }
+.card:hover { background: var(--light); }
+.card-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 18px;
+}
+.card h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+.card-num {
+  position: absolute;
+  bottom: 20px;
+  right: 24px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--border);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: color 0.3s;
+}
+.card:hover .card-num { color: rgba(232,119,34,0.12); }
+
+/* ── MISSION STRIP ── */
+.mission-strip {
+  background: var(--navy-d);
+  position: relative;
+  overflow: hidden;
+}
+.mission-strip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.025) 80px),
+              repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,0.025) 80px);
+}
+.mission-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 56px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+  position: relative;
+  z-index: 1;
+}
+.mission-item {
+  padding: 32px 28px;
+  background: var(--navy-d);
+  position: relative;
+}
+.mission-item .mi-line {
+  width: 32px;
+  height: 3px;
+  background: var(--orange);
+  margin-bottom: 16px;
+  transition: width 0.4s ease;
+}
+.mission-item:hover .mi-line { width: 56px; }
+.mission-item svg { width: 36px; height: 36px; margin-bottom: 14px; display: block; }
+.mission-item h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.mission-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.65; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--navy);
+  padding: 48px 48px 44px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::after {
+  content: '';
+  position: absolute;
+  right: -80px; top: -80px;
+  width: 320px; height: 320px;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  right: 80px; top: -120px;
+  width: 200px; height: 200px;
+  border: 1px solid rgba(0,174,239,0.1);
+  border-radius: 50%;
+}
+.page-header-inner { max-width: 1140px; margin: 0 auto; position: relative; z-index: 1; }
+.page-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 2px; background: var(--cyan); }
+.page-header h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ── TEAM ── */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 32px; }
+.team-card {
+  text-align: center;
+  padding: 36px 16px 28px;
+  background: var(--white);
+  transition: background 0.3s;
+  position: relative;
+}
+.team-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--navy), var(--cyan));
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+.team-card:hover::after { transform: scaleX(1); }
+.team-card:hover { background: var(--light); }
+.team-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  color: var(--white);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  letter-spacing: 0.05em;
+}
+.team-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.team-role { font-size: 12px; color: var(--orange); font-weight: 600; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ── VALUES ── */
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1px; background: var(--border); margin-bottom: 56px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.value-item {
+  background: var(--light);
+  padding: 28px 24px;
+  transition: background 0.3s, transform 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.value-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.value-item:nth-child(1)::before { background: var(--navy-l); }
+.value-item:nth-child(2)::before { background: var(--orange); }
+.value-item:nth-child(3)::before { background: var(--green); }
+.value-item:nth-child(4)::before { background: var(--red); }
+.value-item:hover { background: var(--white); transform: translateY(-2px); }
+.value-item svg { width: 32px; height: 32px; margin-bottom: 14px; display: block; }
+.value-item h4 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.value-item p { font-size: 13px; color: var(--muted); }
+
+/* ── SOCIAL ── */
+.social-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.social-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 28px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--white);
+  transition: background 0.25s, padding-left 0.25s;
+  cursor: pointer;
+}
+.social-card:hover { background: var(--light); padding-left: 36px; }
+.social-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.social-logo svg { width: 28px; height: 28px; }
+.social-info { flex: 1; }
+.social-info strong {
+  display: block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.social-info span { font-size: 13px; color: var(--muted); font-weight: 400; }
+.social-arrow {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.social-card:hover .social-arrow { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.social-arrow svg { width: 16px; height: 16px; }
+
+/* ── DASHBOARD ── */
+.dash-note {
+  background: #E6EEF9;
+  border-left: 4px solid var(--navy);
+  padding: 16px 20px;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 28px;
+  font-size: 14px;
+  color: var(--navy);
+}
+
+/* ── FORM / IFRAME ── */
+.form-iframe-wrap {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--light);
+}
+.form-iframe-wrap iframe {
+  width: 100%;
+  height: 820px;
+  border: none;
+  display: block;
+}
+.form-info {
+  background: var(--light);
+  border-left: 4px solid var(--green);
+  padding: 14px 18px;
+  font-size: 13.5px;
+  color: #1a4030;
+  margin-bottom: 24px;
+  border-radius: 0 4px 4px 0;
+  font-weight: 500;
+}
+
+/* ── JOIN SIDEBAR ── */
+.join-sidebar {}
+.join-box {
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 28px 24px;
+  margin-bottom: 20px;
+}
+.join-box-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.join-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.join-list li {
+  display: flex;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--muted);
+  align-items: flex-start;
+}
+.join-list li svg { width: 16px; height: 16px; color: var(--green); flex-shrink: 0; margin-top: 2px; }
+.join-contact {
+  background: var(--navy);
+  border-radius: 4px;
+  padding: 28px 24px;
+  text-align: center;
+}
+
+/* ── EMPTY ── */
+.empty-state { text-align: center; padding: 80px 20px; color: var(--muted); }
+.empty-icon { margin: 0 auto 20px; width: 72px; height: 72px; color: var(--border); }
+.empty-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.empty-msg { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy-d);
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.footer-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 40px 48px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+}
+.footer-brand strong {
+  display: block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.footer-brand p { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.65; }
+.footer-col h5 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.footer-col ul li a {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+.footer-col ul li a:hover { color: var(--cyan); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 16px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── INFO STRIP (about) ── */
+.info-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-bottom: 56px;
+}
+.info-block p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 14px; }
+.info-block p strong { color: var(--navy); font-weight: 600; }
+.vision-box {
+  background: var(--light);
+  border-left: 4px solid var(--orange);
+  padding: 20px 24px;
+  border-radius: 0 4px 4px 0;
+  margin-top: 8px;
+}
+.vision-box .vb-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--orange);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.vision-box p { font-size: 13.5px; color: var(--muted); margin: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 880px) {
+  .header { padding: 0 16px; height: auto; flex-wrap: wrap; }
+  nav { overflow-x: auto; width: 100%; height: 44px; }
+  .nav-tab { font-size: 11px; padding: 0 10px; height: 44px; }
+  .hero-content { padding: 36px 20px 48px; }
+  .hero h1 { font-size: 32px; }
+  .section { padding: 40px 20px; }
+  .info-strip { grid-template-columns: 1fr; gap: 32px; }
+  .mission-inner { grid-template-columns: 1fr; padding: 32px 20px; }
+  .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 32px 20px; }
+  .footer-bottom { padding: 16px 20px; flex-direction: column; gap: 8px; text-align: center; }
+  .page-header { padding: 32px 20px; }
+}
+
+/* ── DATA VIZ STRIP ── */
+.data-strip {
+  background: var(--light);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 48px;
+}
+.data-strip-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 48px;
+  align-items: center;
+}
+.data-strip-text .section-title { margin-bottom: 12px; }
+.data-strip-text p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 20px; }
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 100px; }
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.bar-fill {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  animation: growBar 1.2s ease forwards;
+  transform-origin: bottom;
+}
+@keyframes growBar { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.bar-label { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="loader-logo">
+    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+      <circle cx="22" cy="22" r="22" fill="#0C2D6B"/>
+      <circle cx="7" cy="22" r="5" fill="none" stroke="#00AEEF" stroke-width="1.2" opacity="0.6"/>
+      <rect x="7" y="32" width="5" height="6" rx="1" fill="#E87722"/>
+      <rect x="14" y="27" width="5" height="11" rx="1" fill="#D93F35"/>
+      <rect x="21" y="22" width="5" height="16" rx="1" fill="#2DAE68"/>
+      <circle cx="34" cy="12" r="2.5" fill="#fff" opacity="0.85"/>
+      <polyline points="9.5,29 16.5,24 23.5,19 34,12" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+    </svg>
+  </div>
+  <span class="loader-label">Cargando</span>
+</div>
+
+<div class="header">
+  <div class="logo-wrap" onclick="switchPage('home')">
+    <div class="logo-img">
+      <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="22" cy="22" r="22" fill="#0C2D6B"/>
+        <circle cx="7" cy="22" r="5" fill="none" stroke="#00AEEF" stroke-width="1.2" opacity="0.6"/>
+        <rect x="7" y="32" width="5" height="6" rx="1" fill="#E87722"/>
+        <rect x="14" y="27" width="5" height="11" rx="1" fill="#D93F35"/>
+        <rect x="21" y="22" width="5" height="16" rx="1" fill="#2DAE68"/>
+        <circle cx="34" cy="12" r="2.5" fill="#fff" opacity="0.85"/>
+        <polyline points="9.5,29 16.5,24 23.5,19 34,12" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <strong>Statistical Solutions</strong>
+      <span>Club — ESPOCH · Estadística</span>
+    </div>
+  </div>
+  <nav>
+    <a class="nav-tab active" id="tab-home"        onclick="switchPage('home')">Inicio</a>
+    <a class="nav-tab"        id="tab-quienes"     onclick="switchPage('quienes')">Quiénes Somos</a>
+    <a class="nav-tab"        id="tab-redes"       onclick="switchPage('redes')">Redes Sociales</a>
+    <a class="nav-tab"        id="tab-dashboard"   onclick="switchPage('dashboard')">Satisfacción de los Integrantes</a>
+    <a class="nav-tab"        id="tab-proyectos"   onclick="switchPage('proyectos')">Proyectos</a>
+    <a class="nav-tab"        id="tab-inscripcion" onclick="switchPage('inscripcion')">Inscribirse</a>
+  </nav>
+</div>
+<div class="color-bar"></div>
+
+
+<div class="page active" id="page-home">
+
+  <div class="hero">
+    <div class="hero-canvas"><canvas id="heroCanvas"></canvas></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Club Estudiantil · ESPOCH · Riobamba</div>
+      <h1>Explorando el Poder <em>de los Datos</em></h1>
+      <p>Construimos soluciones a través de modelado estadístico y analítica. Únete a la comunidad de futuros ingenieros estadísticos en la ESPOCH y lleva la teoría a la práctica.</p>
+      <div class="hero-btns">
+        <a class="btn-primary" onclick="switchPage('inscripcion')">Inscribirme ahora</a>
+        <a class="btn-outline"  onclick="switchPage('quienes')">Conocer el club</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-item">
+      <span class="stat-num" data-target="50">0</span>
+      <span class="stat-lbl">Miembros Activos</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="10">0</span>
+      <span class="stat-lbl">Talleres Realizados</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="3">0</span>
+      <span class="stat-lbl">Semestres Activos</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">100%</span>
+      <span class="stat-lbl">Pasión por los Datos</span>
+    </div>
+  </div>
+
+  <div class="data-strip">
+    <div class="data-strip-inner">
+      <div class="data-strip-text">
+        <div class="section-rule">
+          <div class="section-title" style="margin:0;">Ciencia de <span class="section-accent">Datos</span></div>
+        </div>
+        <p style="margin-top:12px;">Aplicamos metodologías estadísticas rigurosas y herramientas modernas de análisis de datos para generar conocimiento con impacto real en la sociedad ecuatoriana.</p>
+        <a class="btn-primary" onclick="switchPage('quienes')">Nuestra misión</a>
+      </div>
+      <div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:12px;font-weight:600;color:var(--navy);letter-spacing:0.05em;text-transform:uppercase;">R / Python</span>
+              <span style="font-size:12px;color:var(--muted);">90%</span>
+            </div>
+            <div style="background:var(--border);border-radius:2px;height:6px;overflow:hidden;">
+              <div class="bar-anim" data-w="90" style="height:100%;width:0%;background:var(--navy);border-radius:2px;transition:width 1.2s ease;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:12px;font-weight:600;color:var(--navy);letter-spacing:0.05em;text-transform:uppercase;">Machine Learning</span>
+              <span style="font-size:12px;color:var(--muted);">78%</span>
+            </div>
+            <div style="background:var(--border);border-radius:2px;height:6px;overflow:hidden;">
+              <div class="bar-anim" data-w="78" style="height:100%;width:0%;background:var(--orange);border-radius:2px;transition:width 1.2s 0.15s ease;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:12px;font-weight:600;color:var(--navy);letter-spacing:0.05em;text-transform:uppercase;">Visualización (Power BI / Looker)</span>
+              <span style="font-size:12px;color:var(--muted);">85%</span>
+            </div>
+            <div style="background:var(--border);border-radius:2px;height:6px;overflow:hidden;">
+              <div class="bar-anim" data-w="85" style="height:100%;width:0%;background:var(--green);border-radius:2px;transition:width 1.2s 0.3s ease;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:12px;font-weight:600;color:var(--navy);letter-spacing:0.05em;text-transform:uppercase;">Estadística Multivariante</span>
+              <span style="font-size:12px;color:var(--muted);">82%</span>
+            </div>
+            <div style="background:var(--border);border-radius:2px;height:6px;overflow:hidden;">
+              <div class="bar-anim" data-w="82" style="height:100%;width:0%;background:var(--red);border-radius:2px;transition:width 1.2s 0.45s ease;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mission-strip">
+    <div class="mission-inner">
+      <div class="mission-item reveal">
+        <div class="mi-line"></div>
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="20" width="7" height="14" rx="1" fill="#E87722"/>
+          <rect x="11" y="14" width="7" height="20" rx="1" fill="#D93F35"/>
+          <rect x="20" y="8" width="7" height="26" rx="1" fill="#2DAE68"/>
+          <polyline points="5.5,18 14.5,11 23.5,5 32,2" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          <circle cx="32" cy="2" r="2.5" fill="white" opacity="0.85"/>
+        </svg>
+        <h4>Análisis Estadístico</h4>
+        <p>Aplicamos métodos estadísticos robustos para resolver problemas reales del entorno académico y social de Chimborazo y Ecuador.</p>
+      </div>
+      <div class="mission-item reveal reveal-delay-1">
+        <div class="mi-line"></div>
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="10" stroke="#00AEEF" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="18" cy="18" r="5" fill="#00AEEF" opacity="0.8"/>
+          <line x1="18" y1="4" x2="18" y2="8" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="18" y1="28" x2="18" y2="32" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="4" y1="18" x2="8" y2="18" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="28" y1="18" x2="32" y2="18" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <h4>Innovación y Ciencia</h4>
+        <p>Exploramos herramientas modernas de ciencia de datos, machine learning y visualización de información con enfoque aplicado.</p>
+      </div>
+      <div class="mission-item reveal reveal-delay-2">
+        <div class="mi-line"></div>
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="12" r="5" stroke="#2DAE68" stroke-width="1.5" fill="none"/>
+          <circle cx="26" cy="12" r="5" stroke="#2DAE68" stroke-width="1.5" fill="none"/>
+          <circle cx="18" cy="26" r="5" stroke="#2DAE68" stroke-width="1.5" fill="none"/>
+          <line x1="14.5" y1="14" x2="21.5" y2="14" stroke="white" stroke-width="1" opacity="0.4"/>
+          <line x1="13" y1="17" x2="16" y2="22" stroke="white" stroke-width="1" opacity="0.4"/>
+          <line x1="23" y1="17" x2="20" y2="22" stroke="white" stroke-width="1" opacity="0.4"/>
+        </svg>
+        <h4>Comunidad Colaborativa</h4>
+        <p>Fomentamos el trabajo en equipo, el aprendizaje continuo y la conexión entre estudiantes apasionados por los datos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-rule">
+      <div class="section-title" style="margin:0;">¿Qué hacemos en el <span class="section-accent">club?</span></div>
+    </div>
+    <p class="section-sub" style="margin-top:8px;">Actividades, recursos y oportunidades para crecer en el mundo de los datos.</p>
+    <div class="card-grid">
+      <div class="card reveal">
+        <svg class="card-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4"  y="28" width="8"  height="16" rx="1" fill="var(--navy-l)" opacity="0.3"/>
+          <rect x="14" y="20" width="8"  height="24" rx="1" fill="var(--navy-l)" opacity="0.5"/>
+          <rect x="24" y="12" width="8"  height="32" rx="1" fill="var(--navy-l)" opacity="0.7"/>
+          <rect x="34" y="4"  width="8"  height="40" rx="1" fill="var(--navy)"/>
+          <polyline points="8,26 18,18 28,10 38,2" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="38" cy="2" r="3" fill="var(--orange)"/>
+        </svg>
+        <h3>Talleres Prácticos</h3>
+        <p>Sesiones de R, Python, SPSS y más herramientas estadísticas con aplicaciones directas a casos reales del entorno.</p>
+        <span class="card-num">01</span>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <svg class="card-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="24,4 28,18 43,18 31,27 36,41 24,32 12,41 17,27 5,18 20,18" stroke="var(--orange)" stroke-width="1.5" fill="rgba(232,119,34,0.1)" stroke-linejoin="round"/>
+        </svg>
+        <h3>Competencias y Eventos</h3>
+        <p>Participación en olimpiadas, hackatones y concursos de estadística a nivel nacional e internacional.</p>
+        <span class="card-num">02</span>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <svg class="card-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="20" r="12" stroke="var(--green)" stroke-width="1.5" fill="rgba(45,174,104,0.08)"/>
+          <circle cx="24" cy="20" r="6"  stroke="var(--green)" stroke-width="1.5" fill="none"/>
+          <circle cx="24" cy="20" r="2"  fill="var(--green)"/>
+          <line x1="24" y1="4"  x2="24" y2="8"  stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="24" y1="32" x2="24" y2="36" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="8"  y1="20" x2="12" y2="20" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="36" y1="20" x2="40" y2="20" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="12" y1="40" x2="36" y2="40" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        </svg>
+        <h3>Investigación Aplicada</h3>
+        <p>Desarrollo de proyectos de análisis de datos con impacto en la comunidad de Chimborazo y Ecuador.</p>
+        <span class="card-num">03</span>
+      </div>
+      <div class="card reveal reveal-delay-3">
+        <svg class="card-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="6" width="32" height="36" rx="2" stroke="var(--red)" stroke-width="1.5" fill="rgba(217,63,53,0.06)"/>
+          <line x1="14" y1="16" x2="34" y2="16" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+          <line x1="14" y1="22" x2="34" y2="22" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+          <line x1="14" y1="28" x2="26" y2="28" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+          <circle cx="34" cy="34" r="6" fill="var(--red)" opacity="0.15" stroke="var(--red)" stroke-width="1.5"/>
+          <line x1="34" y1="31" x2="34" y2="34" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="34" cy="36.5" r="1" fill="var(--red)"/>
+        </svg>
+        <h3>Recursos y Aprendizaje</h3>
+        <p>Acceso a materiales, guías, bases de datos y mentorías con docentes y estudiantes avanzados de la carrera.</p>
+        <span class="card-num">04</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="page" id="page-quienes">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Statistical Solutions Club</div>
+      <h2>Quiénes Somos</h2>
+    </div>
+  </div>
+  <div class="color-bar"></div>
+
+  <div class="section">
+    <div class="info-strip">
+      <div class="info-block reveal">
+        <div class="section-rule">
+          <div class="section-title" style="margin:0;">Nuestra <span class="section-accent">Historia</span></div>
+        </div>
+        <p style="margin-top:16px;">El <strong>Statistical Solutions Club – ESPOCH</strong> nació con la visión de crear un espacio estudiantil donde la estadística deja de ser solo teoría y se convierte en una herramienta poderosa de transformación.</p>
+        <p>Formado por estudiantes de la <strong>Carrera de Estadística, Facultad de Ciencias</strong> de la Escuela Superior Politécnica de Chimborazo, nuestro club reúne a apasionados por los datos, el análisis cuantitativo y la toma de decisiones basada en evidencia.</p>
+        <p>Creemos que la estadística tiene el poder de iluminar realidades, resolver problemas complejos y generar impacto positivo en nuestra sociedad.</p>
+      </div>
+      <div class="info-block reveal reveal-delay-1">
+        <div class="section-rule">
+          <div class="section-title" style="margin:0;">Nuestra <span class="section-accent">Misión</span></div>
+        </div>
+        <p style="margin-top:16px;">Fomentar el desarrollo de competencias estadísticas, analíticas y científicas en los estudiantes de la ESPOCH, promoviendo el aprendizaje colaborativo, la investigación aplicada y la innovación con datos.</p>
+        <div class="vision-box">
+          <div class="vb-label">Visión</div>
+          <p>Ser el club de estadística más influyente del Ecuador, reconocido por la calidad de sus proyectos y el impacto de sus miembros en el ámbito científico y profesional.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-rule" style="margin-bottom:10px;">
+      <div class="section-title" style="margin:0;">Nuestros <span class="section-accent">Valores</span></div>
+    </div>
+    <p class="section-sub">Los principios que guían cada acción del club.</p>
+    <div class="values-grid">
+      <div class="value-item reveal">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="12" stroke="var(--navy-l)" stroke-width="1.5" fill="none"/>
+          <circle cx="16" cy="16" r="4"  fill="var(--navy-l)" opacity="0.6"/>
+          <line x1="16" y1="2"  x2="16" y2="6"  stroke="var(--navy-l)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="16" y1="26" x2="16" y2="30" stroke="var(--navy-l)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="2"  y1="16" x2="6"  y2="16" stroke="var(--navy-l)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="26" y1="16" x2="30" y2="16" stroke="var(--navy-l)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h4>Rigor</h4>
+        <p>Aplicamos metodologías estadísticas con precisión y honestidad científica.</p>
+      </div>
+      <div class="value-item reveal reveal-delay-1">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="10" stroke="var(--orange)" stroke-width="1.5" fill="rgba(232,119,34,0.08)"/>
+          <polyline points="8,16 13,21 24,10" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h4>Impacto</h4>
+        <p>Nuestros proyectos generan valor real para la sociedad y el entorno académico.</p>
+      </div>
+      <div class="value-item reveal reveal-delay-2">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="4" stroke="var(--green)" stroke-width="1.5" fill="none"/>
+          <circle cx="22" cy="10" r="4" stroke="var(--green)" stroke-width="1.5" fill="none"/>
+          <circle cx="16" cy="22" r="4" stroke="var(--green)" stroke-width="1.5" fill="none"/>
+          <line x1="14" y1="12" x2="18" y2="12" stroke="var(--green)" stroke-width="1" opacity="0.5"/>
+          <line x1="12" y1="14" x2="14" y2="19" stroke="var(--green)" stroke-width="1" opacity="0.5"/>
+          <line x1="20" y1="14" x2="18" y2="19" stroke="var(--green)" stroke-width="1" opacity="0.5"/>
+        </svg>
+        <h4>Colaboración</h4>
+        <p>Crecemos juntos compartiendo conocimiento y experiencias.</p>
+      </div>
+      <div class="value-item reveal reveal-delay-3">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="6,22 12,14 18,18 26,8" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="26" cy="8" r="3" fill="var(--red)" opacity="0.8"/>
+          <line x1="6" y1="26" x2="26" y2="26" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+        <h4>Innovación</h4>
+        <p>Adoptamos nuevas tecnologías y enfoques en ciencia de datos.</p>
+      </div>
+    </div>
+
+    <div class="section-rule" style="margin-bottom:10px;">
+      <div class="section-title" style="margin:0;">Directiva <span class="section-accent">Estudiantil</span></div>
+    </div>
+    <p class="section-sub">Los estudiantes que lideran y coordinan las actividades del club.</p>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-avatar" style="background:var(--navy);">JA</div>
+        <div class="team-name">Jose Alcivar</div>
+        <div class="team-role">Presidente</div>
+      </div>
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-avatar" style="background:var(--orange);">JG</div>
+        <div class="team-name">Jose Gallegos</div>
+        <div class="team-role">Vicepresidente</div>
+      </div>
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-avatar" style="background:var(--green);">MI</div>
+        <div class="team-name">Mayra Ilbay</div>
+        <div class="team-role">Secretaria</div>
+      </div>
+      <div class="team-card reveal reveal-delay-3">
+        <div class="team-avatar" style="background:var(--red);">KM</div>
+        <div class="team-name">Karina Manya</div>
+        <div class="team-role">Tesorera</div>
+      </div>
+    </div>
+
+    <div class="section-rule" style="margin-top: 48px; margin-bottom:10px;">
+      <div class="section-title" style="margin:0;">Docentes <span class="section-accent">Asesores</span></div>
+    </div>
+    <p class="section-sub">Ingenieros y profesionales que respaldan y guían nuestras iniciativas académicas.</p>
+    <div class="team-grid" style="margin-bottom: 0;">
+      <div class="team-card reveal">
+        <div class="team-avatar" style="background:var(--navy-l);">IE</div>
+        <div class="team-name">Dra. Isabel Escudero</div>
+        <div class="team-role">Asesora Académica</div>
+      </div>
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-avatar" style="background:var(--navy-l);">PM</div>
+        <div class="team-name">Ing. Paulina Morocho</div>
+        <div class="team-role">Apoyo Docente</div>
+      </div>
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-avatar" style="background:var(--navy-l);">JA</div>
+        <div class="team-name">Ing. Johanna Aguilar</div>
+        <div class="team-role">Apoyo Docente</div>
+      </div>
+      <div class="team-card reveal reveal-delay-3">
+        <div class="team-avatar" style="background:var(--navy-l);">EM</div>
+        <div class="team-name">Ing. Edwin Mejia</div>
+        <div class="team-role">Apoyo Docente</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="page" id="page-redes">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Encuéntranos en</div>
+      <h2>Redes Sociales</h2>
+    </div>
+  </div>
+  <div class="color-bar"></div>
+
+  <div class="section">
+    <div class="section-rule" style="margin-bottom:10px;">
+      <div class="section-title" style="margin:0;">Síguenos y <span class="section-accent">Conéctate</span></div>
+    </div>
+    <p class="section-sub">Mantente al tanto de nuestros eventos, talleres y noticias a través de nuestras plataformas.</p>
+
+    <div class="social-list reveal">
+
+      <a class="social-card" href="https://www.instagram.com/statisticalsolutionsclu?igsh=MXUzYmpvOTJqNXo2dA==" target="_blank">
+        <div class="social-logo" style="background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="4.5"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="white" stroke="none"/>
+          </svg>
+        </div>
+        <div class="social-info">
+          <strong>Instagram</strong>
+          <span>@statisticalsolutionsclu — Talleres, resultados y comunidad</span>
+        </div>
+        <div class="social-arrow">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="8" x2="13" y2="8"/>
+            <polyline points="9,4 13,8 9,12"/>
+          </svg>
+        </div>
+      </a>
+
+      <a class="social-card" href="https://www.tiktok.com/@club.statistical?_r=1&_t=ZS-96GKlKN2LwG" target="_blank">
+        <div class="social-logo" style="background:#010101;">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.16 8.16 0 004.77 1.52V6.75a4.84 4.84 0 01-1-.06z"/>
+          </svg>
+        </div>
+        <div class="social-info">
+          <strong>TikTok</strong>
+          <span>@club.statistical — Contenido estadístico en formato corto</span>
+        </div>
+        <div class="social-arrow">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="8" x2="13" y2="8"/>
+            <polyline points="9,4 13,8 9,12"/>
+          </svg>
+        </div>
+      </a>
+
+      <a class="social-card" href="https://www.facebook.com/share/1DHpYHuJPE/" target="_blank">
+        <div class="social-logo" style="background:#1877F2;">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.028 4.388 11.026 10.125 11.927v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796v8.437C19.612 23.099 24 18.101 24 12.073z"/>
+          </svg>
+        </div>
+        <div class="social-info">
+          <strong>Facebook</strong>
+          <span>Statistical Solutions Club ESPOCH — Eventos y noticias</span>
+        </div>
+        <div class="social-arrow">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="8" x2="13" y2="8"/>
+            <polyline points="9,4 13,8 9,12"/>
+          </svg>
+        </div>
+      </a>
+
+    </div>
+
+    <div style="margin-top:40px;background:var(--navy);border-radius:4px;padding:40px 48px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;" class="reveal">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--white);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;">Tienes alguna consulta</div>
+        <p style="color:rgba(255,255,255,0.55);font-size:14px;margin:0;">Escríbenos a través de cualquiera de nuestras redes sociales y te responderemos a la brevedad.</p>
+      </div>
+      <a class="btn-primary" href="https://www.instagram.com/statisticalsolutionsclu?igsh=MXUzYmpvOTJqNXo2dA==" target="_blank" style="white-space:nowrap;">Contactar por Instagram</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="page" id="page-dashboard">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Looker Studio</div>
+      <h2>Dashboard de Satisfacción</h2>
+    </div>
+  </div>
+  <div class="color-bar"></div>
+
+  <div class="section">
+    <div class="section-rule" style="margin-bottom:10px;">
+      <div class="section-title" style="margin:0;">Métricas de <span class="section-accent">Satisfacción</span></div>
+    </div>
+    <p class="section-sub">Resultados de nuestras encuestas de satisfacción, analizados en tiempo real con Looker Studio.</p>
+
+    <div class="dash-note">
+      <strong>Instrucción para el administrador:</strong> Reemplaza el <code>src</code> del iframe con el enlace público de tu reporte de Looker Studio. Ve a tu reporte → Compartir → Obtener enlace para insertar.
+    </div>
+
+    <div style="width:100%;height:640px;border:1px solid var(--border);border-radius:4px;overflow:hidden;">
+      <iframe
+        src="https://lookerstudio.google.com/embed/reporting/REEMPLAZA-TU-ID-AQUI/page/PAGINA"
+        style="width:100%;height:100%;border:none;"
+        allowfullscreen
+        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+      ></iframe>
+    </div>
+  </div>
+</div>
+
+
+<div class="page" id="page-proyectos">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Iniciativas</div>
+      <h2>Proyectos del Club</h2>
+    </div>
+  </div>
+  <div class="color-bar"></div>
+
+  <div class="section">
+    <div class="section-rule" style="margin-bottom:10px;">
+      <div class="section-title" style="margin:0;">Nuestros <span class="section-accent">Proyectos</span></div>
+    </div>
+    <p class="section-sub">Iniciativas estudiantiles de análisis de datos e investigación estadística.</p>
+
+    <div class="empty-state">
+      <svg class="empty-icon" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="36" cy="36" r="32" stroke="currentColor" stroke-width="1.5" fill="none"/>
+        <circle cx="36" cy="36" r="20" stroke="currentColor" stroke-width="1" fill="none" opacity="0.5"/>
+        <circle cx="36" cy="36" r="8"  stroke="currentColor" stroke-width="1" fill="none" opacity="0.3"/>
+        <line x1="36" y1="4" x2="36" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="36" y1="58" x2="36" y2="68" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="4" y1="36" x2="14" y2="36" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="58" y1="36" x2="68" y2="36" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="empty-title">Proyectos en camino</div>
+      <p class="empty-msg">Aún no tenemos proyectos publicados, pero estamos trabajando en ello.<br>Próximamente encontrarás aquí nuestras iniciativas y trabajos colaborativos.</p>
+      <div style="margin-top:32px;">
+        <a class="btn-primary" onclick="switchPage('inscripcion')">Sé parte del primer proyecto</a>
+      </div>
+    </div>
+
+    <div style="margin-top:48px;">
+      <div class="section-rule" style="margin-bottom:10px;">
+        <div class="section-title" style="margin:0;font-size:22px;">Áreas de <span class="section-accent">Interés</span></div>
+      </div>
+      <p style="color:var(--muted);margin-bottom:28px;font-size:14px;">Los proyectos futuros explorarán estas líneas temáticas:</p>
+      <div class="card-grid">
+        <div class="card reveal">
+          <svg class="card-icon" viewBox="0 0 48 48" fill="none">
+            <rect x="8" y="6" width="32" height="36" rx="2" stroke="var(--navy-l)" stroke-width="1.5" fill="rgba(23,72,163,0.06)"/>
+            <path d="M16 30 Q20 18 24 22 Q28 26 32 16" stroke="var(--navy-l)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="16" cy="30" r="2" fill="var(--navy-l)"/>
+            <circle cx="32" cy="16" r="2" fill="var(--navy-l)"/>
+          </svg>
+          <h3>Salud Pública</h3>
+          <p>Análisis de datos epidemiológicos y estadísticas de salud en la provincia de Chimborazo.</p>
+          <span class="card-num">01</span>
+        </div>
+        <div class="card reveal reveal-delay-1">
+          <svg class="card-icon" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="16" stroke="var(--green)" stroke-width="1.5" fill="rgba(45,174,104,0.06)"/>
+            <path d="M24 8 L24 16 M24 32 L24 40 M8 24 L16 24 M32 24 L40 24" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M16 16 L32 32 M32 16 L16 32" stroke="var(--green)" stroke-width="1" opacity="0.3" stroke-linecap="round"/>
+          </svg>
+          <h3>Medio Ambiente</h3>
+          <p>Modelado estadístico de variables climáticas y análisis de impacto ambiental regional.</p>
+          <span class="card-num">02</span>
+        </div>
+        <div class="card reveal reveal-delay-2">
+          <svg class="card-icon" viewBox="0 0 48 48" fill="none">
+            <rect x="6"  y="26" width="8" height="16" rx="1" fill="var(--orange)" opacity="0.25"/>
+            <rect x="16" y="20" width="8" height="22" rx="1" fill="var(--orange)" opacity="0.5"/>
+            <rect x="26" y="14" width="8" height="28" rx="1" fill="var(--orange)" opacity="0.75"/>
+            <rect x="36" y="8"  width="6" height="34" rx="1" fill="var(--orange)"/>
+          </svg>
+          <h3>Economía y Empresa</h3>
+          <p>Estudios de mercado, predicción de demanda y análisis de indicadores económicos locales.</p>
+          <span class="card-num">03</span>
+        </div>
+        <div class="card reveal reveal-delay-3">
+          <svg class="card-icon" viewBox="0 0 48 48" fill="none">
+            <rect x="8" y="6" width="32" height="36" rx="2" stroke="var(--red)" stroke-width="1.5" fill="rgba(217,63,53,0.06)"/>
+            <circle cx="24" cy="22" r="8" stroke="var(--red)" stroke-width="1.5" fill="none"/>
+            <polyline points="20,20 23,23 28,18" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="14" y1="34" x2="34" y2="34" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+          <h3>Educación</h3>
+          <p>Métricas de rendimiento académico y análisis de factores que influyen en el aprendizaje.</p>
+          <span class="card-num">04</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="page" id="page-inscripcion">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="page-eyebrow">Únete a nosotros</div>
+      <h2>Inscríbete al Club</h2>
+    </div>
+  </div>
+  <div class="color-bar"></div>
+
+  <div class="section">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <div class="section-rule" style="margin-bottom:10px;">
+          <div class="section-title" style="margin:0;">Formulario de <span class="section-accent">Inscripción</span></div>
+        </div>
+        <p class="section-sub">Completa el formulario y nos pondremos en contacto contigo para los siguientes pasos de admisión.</p>
+
+        <div class="form-info">
+          Membresía abierta a todos los estudiantes de la ESPOCH. No se requiere experiencia previa en estadística.
+        </div>
+
+        <div class="form-iframe-wrap reveal">
+          <iframe
+            src="https://forms.office.com/pages/responsepage.aspx?id=EGf41-EBHUaFmXWN5FQuK1eV9REPJUxDiXp6HhZ5EqZUMThRMTJIUU4ySzBOWEpMRFRNNzcyMExJQS4u&origin=QRCode&route=shorturl"
+            title="Formulario de Inscripción"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="join-sidebar">
+        <div class="join-box reveal">
+          <div class="join-box-title">Beneficios del Club</div>
+          <ul class="join-list">
+            <li>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg>
+              Acceso a talleres y workshops exclusivos
+            </li>
+            <li>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg>
+              Participación en proyectos reales de datos
+            </li>
+            <li>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg>
+              Red de contactos en estadística y ciencia de datos
+            </li>
+            <li>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg>
+              Certificaciones y reconocimientos académicos
+            </li>
+            <li>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg>
+              Representación en competencias nacionales
+            </li>
+          </ul>
+        </div>
+        <div class="join-contact reveal reveal-delay-1">
+          <svg style="width:36px;height:36px;display:block;margin:0 auto 12px;" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="8" width="28" height="20" rx="2" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none"/>
+            <polyline points="4,10 18,21 32,10" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--white);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">Preguntas</div>
+          <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:18px;">Escríbenos directamente en nuestras redes sociales.</p>
+          <a href="https://www.instagram.com/statisticalsolutionsclu?igsh=MXUzYmpvOTJqNXo2dA==" target="_blank" class="btn-primary" style="font-size:12px;padding:9px 20px;">Instagram del Club</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <strong>Statistical Solutions Club – ESPOCH</strong>
+      <p>Carrera de Estadística · Facultad de Ciencias<br>Escuela Superior Politécnica de Chimborazo<br>Riobamba, Ecuador</p>
+    </div>
+    <div class="footer-col">
+      <h5>Navegación</h5>
+      <ul>
+        <li><a onclick="switchPage('home')">Inicio</a></li>
+        <li><a onclick="switchPage('quienes')">Quiénes Somos</a></li>
+        <li><a onclick="switchPage('redes')">Redes Sociales</a></li>
+        <li><a onclick="switchPage('dashboard')">Dashboard</a></li>
+        <li><a onclick="switchPage('proyectos')">Proyectos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Redes Sociales</h5>
+      <ul>
+        <li><a href="https://www.instagram.com/statisticalsolutionsclu?igsh=MXUzYmpvOTJqNXo2dA==" target="_blank">Instagram</a></li>
+        <li><a href="https://www.tiktok.com/@club.statistical?_r=1&_t=ZS-96GKlKN2LwG" target="_blank">TikTok</a></li>
+        <li><a href="https://www.facebook.com/share/1DHpYHuJPE/" target="_blank">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="color-bar"></div>
+  <div class="footer-bottom">
+    <p>© 2025 Statistical Solutions Club – ESPOCH. Todos los derechos reservados.</p>
+    <p style="color:rgba(255,255,255,0.2);">Carrera de Estadística · Facultad de Ciencias</p>
+  </div>
+</footer>
+
+
+<script>
+// ── PAGE TRANSITION ──
+function switchPage(page) {
+  const loader = document.getElementById('page-loader');
+  loader.classList.add('visible');
+
+  setTimeout(() => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    const pg = document.getElementById('page-' + page);
+    const tb = document.getElementById('tab-' + page);
+    if (pg) pg.classList.add('active');
+    if (tb) tb.classList.add('active');
+    window.scrollTo({ top: 0 });
+
+    loader.classList.remove('visible');
+    initReveal();
+    initBarAnimations();
+  }, 600);
+}
+
+// ── REVEAL ON SCROLL ──
+function initReveal() {
+  const els = document.querySelectorAll('.reveal:not(.visible)');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => observer.observe(el));
+}
+
+// ── BAR ANIMATIONS ──
+function initBarAnimations() {
+  const bars = document.querySelectorAll('.bar-anim');
+  bars.forEach(bar => {
+    bar.style.width = '0%';
+    setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 100);
+  });
+}
+
+// ── COUNTER ANIMATION ──
+function animateCounters() {
+  document.querySelectorAll('.stat-num[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.textContent.replace(/[0-9]/g, '').trim();
+    let current = 0;
+    const step = Math.ceil(target / 30);
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current + (target >= 50 ? '+' : '');
+      if (current >= target) clearInterval(timer);
+    }, 40);
+  });
+}
+
+// ── HERO CANVAS (INTERACTIVO ESTILO IEEE) ──
+(function initCanvas() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, nodes, raf;
+  let mouse = { x: -1000, y: -1000 };
+
+  window.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  window.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function makeNodes(n) {
+    return Array.from({length: n}, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      r: Math.random() * 2 + 1.5,
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // connections entre nodos
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = `rgba(0,174,239,${0.25 * (1 - d/140)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // nodos y conexion al mouse
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,174,239,0.7)';
+      ctx.fill();
+
+      // conexion al cursor
+      const dMouse = Math.sqrt((n.x - mouse.x)**2 + (n.y - mouse.y)**2);
+      if (dMouse < 180) {
+        ctx.beginPath();
+        ctx.moveTo(n.x, n.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(0,174,239,${0.4 * (1 - dMouse/180)})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+    });
+
+    raf = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); });
+  resize();
+  nodes = makeNodes(65); // Aumentado para mejor efecto de red
+  draw();
+})();
+
+// ── INIT ──
+window.addEventListener('load', () => {
+  initReveal();
+  initBarAnimations();
+  animateCounters();
+});
+</script>
+</body>
+</html>
